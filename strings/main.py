@@ -21,7 +21,6 @@ player = 'Arnold Muhren'
 x1 = player.find(' ') 
 first_name = player[:x1]
 last_name = player[x1+1:]
-last_name_len = len(last_name)
 
 name_short = player[0] + ". " + last_name
 
