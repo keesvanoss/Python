@@ -18,19 +18,17 @@ report = f'{example_0 } scored in the {goal_0}nd minute\n{example_1} scored in t
 # Part 2
 
 player = 'Arnold Muhren'
-x1 = player.find('Arnold') 
-first_name = player[x1:6]
-
-x2 = player.find('Muhren') 
-last_name = player[x2:]
+x1 = player.find(' ') 
+first_name = player[:x1]
+last_name = player[x1+1:]
 last_name_len = len(last_name)
 
-name_short = player[0:1] + ". " + last_name
+name_short = player[0] + ". " + last_name
 
-chant_text = first_name + '!' + ' '
+chant_text = first_name + '! '
 chant_times = len(first_name)
 chant = chant_text * chant_times
-chant = chant[0:len(chant)-1]
+chant = chant[:-1]
 
 good_chant = chant[-1] != ' '
 
