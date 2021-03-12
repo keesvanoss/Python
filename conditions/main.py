@@ -14,15 +14,14 @@ def farm_action(weather,time_of_day,cow_milking_status,location_of_cows,season,s
 #   The cows are on the pasture at night
 #   The cows are standing in the rain
 
-  if (location_of_cows == 'pasture'):
-    if (time_of_day == 'night') or (weather == 'rainy'):
+  if ((location_of_cows == 'pasture') and (time_of_day == 'night')) and (weather == 'rainy'):
      action = 'take cows to cowshed\n'
 
 # action = milk cows
 # This needs to be done when the cows require milking, but is only possible when:
 #   The cows are in the cowshed
 
-  if (cow_milking_status == True):  # !!!! NOT RIGHT !!! and (location_of_cows == 'cowshed')
+  if (cow_milking_status == True) and (location_of_cows == 'cowshed'):
     if action == '': action = 'milk cows\n'
 
 # action = fertilize pasture
@@ -64,7 +63,7 @@ def farm_action(weather,time_of_day,cow_milking_status,location_of_cows,season,s
 # But be careful: if the cows were already in the cowshed, 
 # they should not be taken back to the pasture.
 
-  if (cow_milking_status == True) or (action == 'fertilize pasture\n') or (action == 'mow grass\n'):
+  if (action == 'milk cows\n') or (action == 'fertilize pasture\n') or (action == 'mow grass\n'):
     if location_of_cows == 'pasture':
       action = 'take cows to cowshed\n' + action
       if location_of_cows != 'cowshed':
