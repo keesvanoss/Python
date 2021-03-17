@@ -65,7 +65,7 @@ def alphabet_set(countries):
                         return (country_list)               # If so, return number of countries in list
         if country_add_flag is True:                        # Check if country must be added to country list
             country_list.append(countries[ptr])             # Add country to list
-    return False                                            # If alphabet not in country list, return false
+    return country_list                                     # If alphabet not in country list, return false
 
 # This block is only run if this file is the entrypoint; python main.py
 # It is not run if it is imported as a module: `from main import *`
