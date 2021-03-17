@@ -43,7 +43,7 @@ def find_password(FileList):
     for file in FileList:
         with open(file, "r") as ifile:
             for line in ifile:
-                if line.find('password') != -1: return(line[line.find(' ') + 1:])
+                if line.find('password') != -1: return line[line.find(' ') + 1:]
             ifile.close()
     return
 
