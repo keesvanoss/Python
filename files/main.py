@@ -20,14 +20,14 @@ def clean_cache():
         os.chdir('..')
     else:
         os.mkdir('cache')
-    return()
+    return
 
 # Part 2, unzip files into cache
 
 def cache_zip(zipFileName, cacheDir):
     with ZipFile(zipFileName, 'r') as zipObj:
         zipObj.extractall(path=cacheDir)
-    return()
+    return
 
 # Part 3, make file list with path in absolute terms
 
@@ -35,7 +35,7 @@ def cached_files():
     os.chdir('cache')
     FileList = [os.path.abspath(f) for f in os.listdir() if os.path.isfile(f)]
     os.chdir('..')
-    return(FileList)
+    return FileList
 
 # Part 4, find password in textfiles
 
@@ -45,7 +45,7 @@ def find_password(FileList):
             for line in ifile:
                 if line.find('password') != -1: return(line[line.find(' ') + 1:])
             ifile.close()
-    return()
+    return
 
 
 # Test part 1
