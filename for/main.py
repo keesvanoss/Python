@@ -61,10 +61,10 @@ def alphabet_set(countries):
                 if letter in 'abcdefghijklmnopqrstuvwxyz':  # Check for legal letter
                     country_add_flag = True                 # If ok, add country to list
                     alphabet.append(letter)                 # Add letter to alphabet list
-                    if len(alphabet) == 26:                 # Check if alphabet list complete
-                        return (country_list)               # If so, return number of countries in list
         if country_add_flag is True:                        # Check if country must be added to country list
             country_list.append(countries[ptr])             # Add country to list
+        if len(alphabet) == 26:                             # Check if alphabet list complete
+            return (country_list)                           # If so, return number of countries in list
     return country_list                                     # If alphabet not in country list, return false
 
 # This block is only run if this file is the entrypoint; python main.py
