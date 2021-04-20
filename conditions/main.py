@@ -9,6 +9,12 @@ def farm_action(weather,time_of_day,cow_milking_status,location_of_cows,season,s
 #---------------------------------------------------------------------------------
   action = ''
 
+  extra_line = False
+  if (action == 'milk cows\n') or (action == 'fertilize pasture\n') or (action == 'mow grass\n'):
+     cows_moved = False if location_of_cows == 'pasture' else True
+     extra_line = True
+     location_of_cows == 'cowshed'
+     
 # action = cows to cowshed
 # This needs to be done when one or more of the following statements are true:
 #   The cows are on the pasture at night
@@ -21,7 +27,7 @@ def farm_action(weather,time_of_day,cow_milking_status,location_of_cows,season,s
 # This needs to be done when the cows require milking, but is only possible when:
 #   The cows are in the cowshed
 
-  if (cow_milking_status == True) and (location_of_cows == 'cowshed'):
+  if ((cow_milking_status == True) and (location_of_cows == 'cowshed')) or cows_moved == True:
     if action == '': action = 'milk cows\n'
 
 # action = fertilize pasture
@@ -63,11 +69,10 @@ def farm_action(weather,time_of_day,cow_milking_status,location_of_cows,season,s
 # But be careful: if the cows were already in the cowshed, 
 # they should not be taken back to the pasture.
 
-  if (action == 'milk cows\n') or (action == 'fertilize pasture\n') or (action == 'mow grass\n'):
-    if location_of_cows == 'pasture':
-      action = 'take cows to cowshed\n' + action
-      if location_of_cows != 'cowshed':
-        action = action + 'take cows back to pasture'
+  if extra_line == True:
+    action = 'take cows to cowshed\n' + action
+    if cows_moved == True:
+        action = action + 'take cows back to pasture\n'
 
 # Remove newline if end of action
 

@@ -1,5 +1,4 @@
 import argparse
-from datetime import date, timedelta
 
 def get_arguments():
     
@@ -37,26 +36,29 @@ def get_arguments():
                     action='store', 
                     type=str)
 
+    my_parser.add_argument('--buy-date', 
+                    help=', product bought date', 
+                    action='store', 
+                    type=str)
+
     my_parser.add_argument('--date', 
                     help=', date', 
-                    nargs='?',
                     action='store', 
                     type=str)
 
     my_parser.add_argument('--now', 
-                    help=', date today', 
+                    help=', current date', 
                     action='store_const', 
-                    const=date.today().strftime("%Y-%m-%d"))
+                    const=True)
 
     my_parser.add_argument('--today', 
-                    help=', date today', 
+                    help=', current date', 
                     action='store_const', 
-                    const=date.today().strftime("%Y-%m-%d"))
+                    const=True)
 
     my_parser.add_argument('--yesterday', 
                     help=', date yesterday', 
                     action='store_const', 
-                    const=(date.today() - timedelta(days=1)).strftime("%Y-%m-%d"))
+                    const=True)
 
-    args = my_parser.parse_args()
-    return args
+    return my_parser.parse_args()

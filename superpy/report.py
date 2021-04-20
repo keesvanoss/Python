@@ -1,22 +1,81 @@
-from datetime import date, timedelta
+import csv
+from datetime import date, timedelta, datetime
 
 #---------------------------------------------------------------------------------------------
 # Report inventory on certain date
 #---------------------------------------------------------------------------------------------
-# Return list with products, nr of products in store, buy price and expiration date.
-# The inventory is listed until a given date.
+# Return list with products in store and expired products.
+# The inventory is listed on a given date.
 #---------------------------------------------------------------------------------------------
 
 def report_inventory(report_date):
-      
-# Create report
-    report_out = ''
-    report_out += '\n+--------------+-------+-----------+-----------------+'
-    report_out += '\n| Product Name | Count | Buy Price | Expiration Date |'
-    report_out += '\n+==============+=======+===========+=================+'
+
+    # Declare variables
+    rep_date = datetime.strptime(report_date.strip("'"),'%Y-%m-%d')
     
-    print(report_out)
-    return 'Ok'
+    # Create report header
+    report_out = f'\n********** INVENTORY REPORT ON {report_date} **********'
+    report_out += '\n+=============================+==========+=========+'
+    report_out += '\n| Product Name                | In stock | Expired |'
+    report_out += '\n+-----------------------------+----------+---------+'
+    
+    # Read products bought and create list with all products
+    bought = {}
+    products = set()
+    f = open('bought.csv')
+    reader = csv.reader(f)
+    with f:
+        for row in reader:
+           #bought[row[0]] = {'product' : row[1].replace("'", ""), 'buy_date' : row[2], 'price' : float(row[3]), 'exp_date' : row[4]}
+            bought[row[0]] = [row[1].replace("'", ""), row[2], float(row[3]), row[4]]
+            if not row[1].replace("'", "") in products:
+                products.add(row[1].replace("'", ""))
+
+    # Read products sold and remove sold products from bought
+    f = open('sold.csv')
+    reader = csv.reader(f)
+    with f:
+        for row in reader:
+            if row[1] in bought:
+                del bought[row[1]]
+
+    # Crystalize inventory from bought
+    products_stock = {}
+    products_expired = {}
+    for key in bought:
+
+        # Convert dates to date objects for comparing
+        exp_date = datetime.strptime(bought[key][3].strip("'"),'%Y-%m-%d')
+        buy_date = datetime.strptime(bought[key][1].strip("'"),'%Y-%m-%d')
+
+        # Summarize products and expired products compared to report date 
+        if buy_date <= rep_date:
+            if exp_date >= rep_date:
+                if bought[key][0] in products_stock.keys():
+                   products_stock[bought[key][0]] += 1
+                else:
+                    products_stock[bought[key][0]] = 1
+            else:
+                if bought[key][0] in products_expired.keys():
+                    products_expired[bought[key][0]] += 1
+                else:
+                    products_expired[bought[key][0]] = 1
+
+    # Create report for all products bought
+    for item in products:
+        report_out += "\n| " + item.ljust(28) + "|" 
+        if item in products_stock:
+            report_out += str(products_stock[item]).center(10) + "|"
+        else:
+            report_out += str(0).center(10) + "|"
+        if item in products_expired:
+            report_out += str(products_expired[item]).center(9) + "|"
+        else:
+            report_out += str(0).center(9) + "|"
+
+    report_out += '\n+=============================+==========+=========+'
+
+    return report_out
 
 def report_revenue(report_date):
     report_out = ''
@@ -62,3 +121,23 @@ if __name__ == '__main__':
     print('Test1: ', report_inventory('2021-03-26'))   # Right input
     print('Test2: ', report_inventory('test'))   # Wrong input
     
+# Test routine
+ 
+def main():
+    
+    # Test report inventory
+    print('Test1')
+    report_inventory(None)
+    
+    print('Test2')
+    report_inventory('2021-03-80')
+    
+    print('Test3')
+    report_inventory('2021-03-10')
+    
+    return
+
+
+
+if __name__ == '__main__':
+    main()

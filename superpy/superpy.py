@@ -6,45 +6,17 @@ __human_name__ = 'superpy'
 # Declare import modules
 #---------------------------------------------------------------------------------------------
 
-import report, arguments, sys, datetime
+import report
+from datetime import date, timedelta, datetime
+#, sys, pathlib
+from arguments import get_arguments
+from csv_buy import buy
+from csv_sell import sell
+from csv_time import advance_time
+from utils import get_current_date
 
 # Your code below this line.
 
-#---------------------------------------------------------------------------------------------
-#---------------------------------------------------------------------------------------------
-
-def buy(product_name, price, expiration_date):
-    print(product_name, price, expiration_date)
-    return
-
-#---------------------------------------------------------------------------------------------
-#---------------------------------------------------------------------------------------------
-
-def sell(product_name, price):
-    print(product_name, price)
-    return
-
-#---------------------------------------------------------------------------------------------
-#---------------------------------------------------------------------------------------------
-
-def advance_time(skip_days):
-    print(skip_days)
-    return
-
-#---------------------------------------------------------------------------------------------
-# Check date to be sure it's a valid date in the right format.
-# If ok, return date, else return None
-#---------------------------------------------------------------------------------------------
-
-def check_date(input_date):
-    try:
-        format = "%Y-%m-%d"
-        datetime.datetime.strptime(input_date, format)
-        return input_date
-    except:
-        print("ERROR: This is an incorrect date string format <YYYY-MM-DD>")
-        return None
-    return
 
 #---------------------------------------------------------------------------------------------
 # Main routine
@@ -52,62 +24,35 @@ def check_date(input_date):
 
 def main():
     
+    # Read config file for date
+    #current_date = get_current_date()   
+    current_date = get_current_date()
+    
     # Get command line arguments
-    args = arguments.get_arguments()
+    args = get_arguments()
+    
+    # Check commands and execute the corresponding routine
+    if args.CLI_command.lower() == 'buy': print(buy(args.product_name, args.buy_date, args.price, args.expiration_date))
+    elif args.CLI_command.lower() == 'sell': print(sell(args.product_name, args.price))
+    elif args.CLI_command.lower() == 'report': 
 
-    # Check if command is buy, if so then execute the buy routine
-    if args.CLI_command.lower() == 'buy':
-        
-        # Check if date is given and if so, if format is ok
+        # Convert yesterday, now, today or date to date
         report_date = None
         if args.yesterday != None: 
-            report_date = args.yesterday
-        elif args.now != None: 
-            report_date = args.now
-        elif args.today != None: 
-            report_date = args.today
-        elif args.date != None:
-            report_date = check_date(args.date)
-        else:
-            print('ERROR: Missing data: buy <product_name> <price> <expiration_date>')
-            return
-        
-        # If date ok then execute buy routine else exit routine
-        if report_date != None: 
-            buy(args.product_name, args.price, report_date)
-        else:
-            return
-    
-    # Check if command is sell, if so then execute the sell routine
-    elif args.CLI_command.lower() == 'sell': sell(args.product_name, args.price)
-    
-    # Check if command is report, if so then execute the report routine
-    elif args.CLI_command.lower() == 'report':
-        
-        # Check if date is given and if so, if format is ok
-        report_date = None
-        if args.yesterday != None: 
-            report_date = args.yesterday
-        elif args.now != None: 
-            report_date = args.now
-        elif args.today != None: 
-            report_date = args.today
-        elif args.date != None: 
-            report_date = check_date(args.date)
-        else:
-            print('ERROR: Missing data: report <report_name> <date>')
-            return
-       
-        # If date ok then show report else exit routine
-        if report_date != None: 
+            report_date = (datetime.strptime(current_date, '%Y-%m-%d') - timedelta(days=1)).strftime('%Y-%m-%d')
+        if args.now != None: 
+            report_date = current_date
+        if args.today != None: 
+            report_date = current_date
+        if args.date != None:
+            report_date = args.date
+        if report_date != None:
             print(report.show_report(args.report_name, report_date))
-            return 'Ok'
         else:
-            return
-        
-    # Check if command is buy, if so then execute the buy routine
-    elif args.advance_time != None: advance_time(args.advance_time)
-    
+            print(f"ERROR: missing <date>")
+
+    elif args.advance_time != None: print(advance_time(args.advance_time))
+
     # Unknown command
     else:
         print(f"ERROR: unknown command '{args.CLI_command}' <buy, sell, report>")
