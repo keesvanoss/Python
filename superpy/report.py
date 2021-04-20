@@ -11,8 +11,11 @@ from datetime import date, timedelta, datetime
 def report_inventory(report_date):
 
     # Declare variables
-    rep_date = datetime.strptime(report_date.strip("'"),'%Y-%m-%d')
-    
+    try:
+        rep_date = datetime.strptime(report_date.strip("'"),'%Y-%m-%d')
+    except:
+        return 'ERROR, Wrong date format'
+
     # Create report header
     report_out = f'\n********** INVENTORY REPORT ON {report_date} **********'
     report_out += '\n+=============================+==========+=========+'
@@ -26,19 +29,26 @@ def report_inventory(report_date):
     reader = csv.reader(f)
     with f:
         for row in reader:
-           #bought[row[0]] = {'product' : row[1].replace("'", ""), 'buy_date' : row[2], 'price' : float(row[3]), 'exp_date' : row[4]}
-            bought[row[0]] = [row[1].replace("'", ""), row[2], float(row[3]), row[4]]
-            if not row[1].replace("'", "") in products:
-                products.add(row[1].replace("'", ""))
-
-    # Read products sold and remove sold products from bought
+            product_id, product_name, buy_date, price, exp_date = row
+            bought[product_id] = [product_name.replace("'", ""), buy_date, float(price), exp_date]
+            if not product_name.replace("'", "") in products:
+                products.add(product_name.replace("'", ""))
+    
+    # Read products sold and remove sold products from bought list
     f = open('sold.csv')
     reader = csv.reader(f)
     with f:
         for row in reader:
-            if row[1] in bought:
-                del bought[row[1]]
+            product_id, sell_id, product_name, sold_date, price = row
 
+            # Convert date to date objects for comparing
+            sell_date = datetime.strptime(sold_date.strip("'"),'%Y-%m-%d')
+
+            # If sell_date is before report_date, remove item from bought list
+            if sell_date <= rep_date:
+                if sell_id in bought:
+                    del bought[sell_id]
+    
     # Crystalize inventory from bought
     products_stock = {}
     products_expired = {}
@@ -47,7 +57,7 @@ def report_inventory(report_date):
         # Convert dates to date objects for comparing
         exp_date = datetime.strptime(bought[key][3].strip("'"),'%Y-%m-%d')
         buy_date = datetime.strptime(bought[key][1].strip("'"),'%Y-%m-%d')
-
+        
         # Summarize products and expired products compared to report date 
         if buy_date <= rep_date:
             if exp_date >= rep_date:
@@ -115,26 +125,15 @@ def show_report(report_name, report_date):
         print(f"ERROR: unknown report '{report_name}' <inventory, revenue, profit>")
     return
 
-if __name__ == '__main__':
-    
-    # Check report_inventory routine
-    print('Test1: ', report_inventory('2021-03-26'))   # Right input
-    print('Test2: ', report_inventory('test'))   # Wrong input
-    
-# Test routine
- 
 def main():
     
-    # Test report inventory
-    print('Test1')
-    report_inventory(None)
-    
-    print('Test2')
-    report_inventory('2021-03-80')
-    
-    print('Test3')
-    report_inventory('2021-03-10')
-    
+    # Check report_inventory routine
+    print(40 * '-' + '\nTesting inventory report:\n' + 40 * '-' + '\n')
+    print('Test1: ', report_inventory('2021-01-01'))    # Right input
+    print('Test2: ', report_inventory('2021-01-16'))    # Right input
+    print('Test3: ', report_inventory('test'))          # Wrong input
+    print('Test4: ', report_inventory(None))            # Wrong input
+     
     return
 
 

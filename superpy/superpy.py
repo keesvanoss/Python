@@ -12,8 +12,7 @@ from datetime import date, timedelta, datetime
 from arguments import get_arguments
 from csv_buy import buy
 from csv_sell import sell
-from csv_time import advance_time
-from utils import get_current_date
+from utils import get_current_date, advance_date, set_date
 
 # Your code below this line.
 
@@ -25,15 +24,21 @@ from utils import get_current_date
 def main():
     
     # Read config file for date
-    #current_date = get_current_date()   
     current_date = get_current_date()
     
     # Get command line arguments
     args = get_arguments()
     
     # Check commands and execute the corresponding routine
+    if args.advance_date != None:
+        current_date = advance_date(args.advance_date)
+        return current_date
+    if args.set_date != None:
+        current_date = set_date(args.set_date)
+        return current_date
+    
     if args.CLI_command.lower() == 'buy': print(buy(args.product_name, args.buy_date, args.price, args.expiration_date))
-    elif args.CLI_command.lower() == 'sell': print(sell(args.product_name, args.price))
+    elif args.CLI_command.lower() == 'sell': print(sell(args.product_name, args.sell_date, args.price))
     elif args.CLI_command.lower() == 'report': 
 
         # Convert yesterday, now, today or date to date
@@ -50,8 +55,6 @@ def main():
             print(report.show_report(args.report_name, report_date))
         else:
             print(f"ERROR: missing <date>")
-
-    elif args.advance_time != None: print(advance_time(args.advance_time))
 
     # Unknown command
     else:

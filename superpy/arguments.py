@@ -26,10 +26,15 @@ def get_arguments():
                     action='store', 
                     type=float)
 
-    my_parser.add_argument('--advance-time', 
-                    help=', advance time in days', 
+    my_parser.add_argument('--advance-date', 
+                    help=', advance date in days', 
                     action='store', 
                     type=int)
+
+    my_parser.add_argument('--set-date', 
+                    help=', set date', 
+                    action='store', 
+                    type=str)
 
     my_parser.add_argument('--expiration-date', 
                     help=', product expiration date', 
@@ -37,7 +42,12 @@ def get_arguments():
                     type=str)
 
     my_parser.add_argument('--buy-date', 
-                    help=', product bought date', 
+                    help=', product buy date', 
+                    action='store', 
+                    type=str)
+
+    my_parser.add_argument('--sell-date', 
+                    help=', product sell date', 
                     action='store', 
                     type=str)
 
