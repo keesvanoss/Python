@@ -66,14 +66,14 @@ def set_date(date):
 
 # Clear data files for testing
 
-def cleardata():
-    file = pathlib.Path('bought.csv')
+def cleardata(filename):
+    file = pathlib.Path(filename)
     if file.exists ():
        os.remove(file)
     
-    file = pathlib.Path('sold.csv')
-    if file.exists ():
-       os.remove(file)
+    # file = pathlib.Path('sold.csv')
+    # if file.exists ():
+    #    os.remove(file)
 
     return
 # Test routine

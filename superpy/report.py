@@ -1,4 +1,5 @@
 import csv
+from files import read_bought, read_sold
 from datetime import date, timedelta, datetime
 
 #---------------------------------------------------------------------------------------------
@@ -10,7 +11,7 @@ from datetime import date, timedelta, datetime
 
 def report_inventory(report_date):
 
-    # Declare variables
+    # Convert report date to date object
     try:
         rep_date = datetime.strptime(report_date.strip("'"),'%Y-%m-%d')
     except:
@@ -23,32 +24,24 @@ def report_inventory(report_date):
     report_out += '\n+-----------------------------+----------+---------+'
     
     # Read products bought and create list with all products
-    bought = {}
-    products = set()
-    f = open('bought.csv')
-    reader = csv.reader(f)
-    with f:
-        for row in reader:
-            product_id, product_name, buy_date, price, exp_date = row
-            bought[product_id] = [product_name.replace("'", ""), buy_date, float(price), exp_date]
-            if not product_name.replace("'", "") in products:
-                products.add(product_name.replace("'", ""))
-    
+    bought = read_bought(report_date)
+    productlist = set()
+    for item in bought.items():
+ 
+        # If product name not in product list, add it
+        if not item[1][0] in productlist:  
+            productlist.add(item[1][0])
+     
     # Read products sold and remove sold products from bought list
-    f = open('sold.csv')
-    reader = csv.reader(f)
-    with f:
-        for row in reader:
-            product_id, sell_id, product_name, sold_date, price = row
+    sold = read_sold(report_date)
+    for item in sold.items():
+        sell_date = datetime.strptime(item[1][1].strip("'"),'%Y-%m-%d')
 
-            # Convert date to date objects for comparing
-            sell_date = datetime.strptime(sold_date.strip("'"),'%Y-%m-%d')
+        # If sell_date is before report_date, remove item from bought list
+        if sell_date <= rep_date:
+            if item[1][0] in bought:
+                del bought[item[1][0]]
 
-            # If sell_date is before report_date, remove item from bought list
-            if sell_date <= rep_date:
-                if sell_id in bought:
-                    del bought[sell_id]
-    
     # Crystalize inventory from bought
     products_stock = {}
     products_expired = {}
@@ -72,7 +65,7 @@ def report_inventory(report_date):
                     products_expired[bought[key][0]] = 1
 
     # Create report for all products bought
-    for item in products:
+    for item in productlist:
         report_out += "\n| " + item.ljust(28) + "|" 
         if item in products_stock:
             report_out += str(products_stock[item]).center(10) + "|"
@@ -87,22 +80,39 @@ def report_inventory(report_date):
 
     return report_out
 
-def report_revenue(report_date):
-    report_out = ''
-    if report_date == str(date.today()): 
-        report_out = "Today's revenue so far:"
-    elif report_date == str(date.today()-timedelta(1)):
-        report_out = "Yesterday's revenue:"
-    else: 
-        day = int(report_date.split('-')[2])
-        month = int(report_date.split('-')[1])
-        year = int(report_date.split('-')[0])
-        report_out = 'Revenue from ' + date(year,month,day).strftime('%B ') + report_date.split('-')[0] + ':'
-        print(report_out)
-    return 'Ok'
+# Revenue report, print revenue on a given date.
 
-def report_profit(date):
-    pass
+def report_revenue(report_date):
+
+    # Check for montly revenue
+    if len(report_date) != 10:
+        return
+
+    # Read products sold
+    sold = read_sold(report_date)
+    
+    # Sumarize all prices in sold
+    revenue = sum(item[1][3] for item in sold.items() )
+
+    return 'Revenu on ' + report_date + ': EUR {:.2f}'.format(revenue)
+
+def report_profit(report_date):
+
+    # Check for montly revenue
+    if len(report_date) != 10:
+        return
+
+    # Read products bought and sold on a given date
+    bought = read_bought(report_date)
+    sold = read_sold(report_date)
+    
+    # Sumarize all prices in bought
+    total_bought = sum(item[1][2] for item in bought.items() )
+    
+    # Sumarize all prices in sold
+    total_sold= sum(item[1][3] for item in sold.items() )
+ 
+    return 'Profit on ' + report_date + ': EUR {:.2f}'.format(total_sold - total_bought)
 
 #---------------------------------------------------------------------------------------------
 # Show report:
@@ -133,7 +143,18 @@ def main():
     print('Test2: ', report_inventory('2021-01-16'))    # Right input
     print('Test3: ', report_inventory('test'))          # Wrong input
     print('Test4: ', report_inventory(None))            # Wrong input
-     
+
+    print('\nTest revenu:') 
+    print(report_revenue('2021-01-01'))
+    print(report_revenue('2021-01-04'))
+    print(report_revenue('2021-01'))
+  
+    print('\nTest profit:') 
+    print(report_profit('2021-01-01'))
+    print(report_profit('2021-01-04'))
+    print(report_profit('2021-01-08'))
+    print(report_profit('2021-01'))
+
     return
 
 

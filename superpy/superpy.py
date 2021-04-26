@@ -29,7 +29,7 @@ def main():
     # Get command line arguments
     args = get_arguments()
     
-    # Check commands and execute the corresponding routine
+    # Check date handling commands and execute the corresponding routine
     if args.advance_date != None:
         current_date = advance_date(args.advance_date)
         return current_date
@@ -37,6 +37,7 @@ def main():
         current_date = set_date(args.set_date)
         return current_date
     
+    # Check commands and execute the corresponding routine
     if args.CLI_command.lower() == 'buy': print(buy(args.product_name, args.buy_date, args.price, args.expiration_date))
     elif args.CLI_command.lower() == 'sell': print(sell(args.product_name, args.sell_date, args.price))
     elif args.CLI_command.lower() == 'report': 

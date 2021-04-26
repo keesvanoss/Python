@@ -9,17 +9,17 @@ csv_outputfile = 'bought.csv'
 #---------------------------------------------------------------------------------------------
 
 def buy(product_name, buy_date, price, expiration_date):
-    
+
     # Check if routine is called with the right parameters    
     error_message = ''
     if product_name == None:
-        error_message += "ERROR: missing argument --product-name\n"
+        error_message += "ERROR: missing argument --product_name\n"
     if price == None:
         error_message += "ERROR: missing argument --price\n"
     if check_date(expiration_date) == None:
-        error_message += "ERROR: missing argument --expiration-date or wrong format <YYYY-MM-DD>\n"
+        error_message += "ERROR: missing argument --expiration_date or wrong format <YYYY-MM-DD>\n"
     if check_date(buy_date) == None:
-        error_message += "ERROR: missing argument --buy-date or wrong format <YYYY-MM-DD>"
+        error_message += "ERROR: missing argument --buy_date or wrong format <YYYY-MM-DD>"
 
     # If parameters ok, add data to bought.csv file
     if error_message == '':
@@ -55,11 +55,11 @@ def buy(product_name, buy_date, price, expiration_date):
 def main():
     
     # If bought.csv and sold.csv exists, delete them
-    cleardata()
+    cleardata('bought.csv')
 
     # Test call with missing parameters
     print('Testing input1:')
-    print(buy(None, None, None, None))
+    print(buy('Banana', '2021-01-08', 2.3, '2021-01-15'))
     
     print('\nTesting input2:')
     print(buy('Orange', None, None, None))
@@ -84,10 +84,10 @@ def main():
    
     # Add 3 items to bought.csv
     print('\nTesting adding data:')
-    print(buy('Orange', '2021-03-13', 3, '2021-03-27'))
-    print(buy('Apple', '2021-03-13', 2, '2021-03-27'))
-    print(buy('Peer', '2021-03-13', 4, '2021-03-25'))
-    print(buy('Peer', '2021-03-13', 4, '2021-03-28'))
+    print(buy('Orange', '2021-01-01', 3, '2021-01-10'))
+    print(buy('Apple', '2021-01-01', 2, '2021-01-10'))
+    print(buy('Peer', '2021-01-01', 4, '2021-01-12'))
+    print(buy('Peer', '2021-01-03', 4, '2021-01-15'))
     
     return
 

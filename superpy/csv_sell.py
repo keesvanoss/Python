@@ -1,5 +1,5 @@
 import csv, pathlib, os
-from utils import check_date
+from utils import check_date, cleardata
 
 csv_outputfile = 'sold.csv'
 
@@ -13,9 +13,11 @@ def sell(product_name, sell_date, price):
     # Check if routine is called with the right parameters    
     error_message = ''
     if product_name == None:
-        error_message += "ERROR: missing product_name\n"
+        error_message += "ERROR: missing argument --product_name\n"
+    if check_date(sell_date) == None:
+        error_message += "ERROR: missing argument --sell_date or wrong format <YYYY-MM-DD>\n"
     if price == None:
-        error_message += "ERROR: missing price\n"
+        error_message += "ERROR: missing argument --price\n"
     
     # If parameters ok, add data to sold.csv file
     if error_message == '':
@@ -30,10 +32,15 @@ def sell(product_name, sell_date, price):
         else:
             id = 0
 
+        # Check if product in stock
+
+
+
         # Write data row with id to csv file
+        product_id = 0
         with open(csv_outputfile, mode='a', newline='', encoding='utf-8') as f:
             product_writer = csv.writer(f, delimiter=',', quotechar="'", quoting=csv.QUOTE_NONNUMERIC)
-            product_writer.writerow([id, product_name, price])
+            product_writer.writerow([id, product_id, sell_date, price])
         
         # Action finished without problems, return 'Ok'
         return 'Ok'
@@ -50,24 +57,21 @@ def sell(product_name, sell_date, price):
 
 def main():
     
-    # If bought.csv exists, delete it
-    file = pathlib.Path(csv_outputfile)
-    if file.exists ():
-        os.remove(csv_outputfile)
+    cleardata('sold.csv')
     
-    # Test call with missing parameters
-    # print('Testing input1:')
-    # print(sell(None,None))
-    # print('\nTesting input2:')
-    # print(sell('Orange',None))
-    # print('\nTesting input3:')
-    # print(sell(None,4))
+    #Test call with missing parameters
+    print('Testing input1:')
+    print(sell(None, None, None))
+    print('Testing input2:')
+    print(sell('Orange', None, None))
+    print('Testing input3:')
+    print(sell(None, None, 4))
     
-    # Add 3 items to bought.csv
-    # print('\nTesting adding data:')
-    # print(sell('Orange', 3))
-    # print(sell('Apple', 2))
-    # print(sell('Peer', 4))
+    #Add 3 items to bought.csv
+    print('Testing adding data:')
+    print(sell('Orange', '2021-01-04', 3))
+    print(sell('Apple', '2021-01-04', 2))
+    print(sell('Peer', '2021-01-04', 4))
     
     return
 
