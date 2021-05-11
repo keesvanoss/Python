@@ -10,6 +10,8 @@ csv_outputfile = 'bought.csv'
 
 def buy(product_name, buy_date, price, expiration_date):
 
+    print(product_name, buy_date, price, expiration_date)
+    
     # Check if routine is called with the right parameters    
     error_message = ''
     if product_name == None:
@@ -82,7 +84,7 @@ def main():
     print('\nTesting input8:')
     print(buy(None, '2021-03-13', 4, '2021-03-81'))
    
-    # Add 3 items to bought.csv
+    # Add 4 items to bought.csv
     print('\nTesting adding data:')
     print(buy('Orange', '2021-01-01', 3, '2021-01-10'))
     print(buy('Apple', '2021-01-01', 2, '2021-01-10'))

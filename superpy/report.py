@@ -80,9 +80,43 @@ def report_inventory(report_date):
 
     return report_out
 
+
+#---------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------
+
+def report_products(report_date):
+
+    # Convert report date to date object
+    try:
+        rep_date = datetime.strptime(report_date.strip("'"),'%Y-%m-%d')
+    except:
+        return 'ERROR, Wrong date format'
+
+    bought = read_bought(report_date)
+    productlist = set()
+    for item in bought.items():
+ 
+        # If product name not in product list, add it
+        if not item[1][0] in productlist:  
+            productlist.add(item[1][0])
+    
+    # Create report 
+    report_out = f'\nProducts available on {report_date}: '
+    for item in productlist:
+        report_out += item + ", "
+
+    return report_out[:-2]
+
+#---------------------------------------------------------------------------------------------
 # Revenue report, print revenue on a given date.
+#---------------------------------------------------------------------------------------------
 
 def report_revenue(report_date):
+
+    try:
+        rep_date = datetime.strptime(report_date.strip("'"),'%Y-%m-%d')
+    except:
+        return 'ERROR, Wrong date format'
 
     # Check for montly revenue
     if len(report_date) != 10:
@@ -94,13 +128,17 @@ def report_revenue(report_date):
     # Sumarize all prices in sold
     revenue = sum(item[1][3] for item in sold.items() )
 
-    return 'Revenu on ' + report_date + ': EUR {:.2f}'.format(revenue)
+    return '\nRevenu on ' + report_date + ': EUR {:.2f}'.format(revenue)
+
+#---------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------
 
 def report_profit(report_date):
 
-    # Check for montly revenue
-    if len(report_date) != 10:
-        return
+    try:
+        rep_date = datetime.strptime(report_date.strip("'"),'%Y-%m-%d')
+    except:
+        return 'ERROR, Wrong date format'
 
     # Read products bought and sold on a given date
     bought = read_bought(report_date)
@@ -112,7 +150,66 @@ def report_profit(report_date):
     # Sumarize all prices in sold
     total_sold= sum(item[1][3] for item in sold.items() )
  
-    return 'Profit on ' + report_date + ': EUR {:.2f}'.format(total_sold - total_bought)
+    return '\nProfit on ' + report_date + ': EUR {:.2f}'.format(total_sold - total_bought)
+
+def report_bought(report_date):
+
+    # Convert report date to date object
+    try:
+        rep_date = datetime.strptime(report_date.strip("'"),'%Y-%m-%d')
+    except:
+        return 'ERROR, Wrong date format'
+ 
+    # Read bought products 
+    bought = read_bought(report_date)
+
+    # Create report header
+    report_out = f'\n************ BOUGHT REPORT ON {report_date} ***********'
+    report_out += '\n+==============+============+=========+============+'
+    report_out += '\n| Product Name |  Buy date  |  Price  |  Exp.date  |'
+    report_out += '\n+--------------+------------+---------+------------+'
+
+    # Create report for all products bought
+    for key in bought:
+        report_out += "\n| " + bought[key][0].ljust(13) + "|" 
+        report_out += bought[key][1].replace("'", "").center(12) + "|" 
+        report_out += "{:.2f}".format(bought[key][2]).center(9) + "|" 
+        report_out += bought[key][3].replace("'", "").center(12) + "|" 
+        
+    report_out += '\n+==============+============+=========+============+'
+
+    return report_out
+ 
+def report_sold(report_date):
+
+    # Convert report date to date object
+    try:
+        rep_date = datetime.strptime(report_date.strip("'"),'%Y-%m-%d')
+    except:
+        return 'ERROR, Wrong date format'
+ 
+    # Read bought products 
+    bought = read_bought(report_date)
+    sold = read_sold(report_date)
+
+    # Create report header
+    report_out = f'\n*********** SOLD REPORT ON {report_date} ***********'
+    report_out += '\n+==============+============+=========+============+'
+    report_out += '\n| Product Name |  Sold date |  Price  |  Exp.date  |'
+    report_out += '\n+--------------+------------+---------+------------+'
+
+    # Create report for all products bought
+    for key in sold:
+        item = bought[sold[key[0]][0]]
+        report_out += "\n| " + item[0].ljust(13) + "|" 
+        report_out += sold[key][2].replace("'", "").center(12) + "|" 
+        report_out += "{:.2f}".format(sold[key][3]).center(9) + "|" 
+        report_out += item[3].replace("'", "").center(12) + "|" 
+        
+    report_out += '\n+==============+============+=========+============+'
+
+    return report_out
+
 
 #---------------------------------------------------------------------------------------------
 # Show report:
@@ -121,43 +218,33 @@ def report_profit(report_date):
 # - inventory, shows inventory on certain date
 # - revenue, shows revenue on certain date
 # - profit, shows profit on certain date
+# - products, shows which products are available on certain date
 #---------------------------------------------------------------------------------------------
 
 def show_report(report_name, report_date):
     
+    # Check for valid report name typed
     if report_name == 'inventory': return(report_inventory(report_date))
     elif report_name == 'revenue': return(report_revenue(report_date))
     elif report_name == 'profit': return(report_profit(report_date))
-    
-    # Non valid report name typed
-
+    elif report_name == 'products':return(report_products(report_date))
+    elif report_name == 'bought':return(report_bought(report_date))
+    elif report_name == 'sold':return(report_sold(report_date))
     else:
         print(f"ERROR: unknown report '{report_name}' <inventory, revenue, profit>")
     return
 
 def main():
     
-    # Check report_inventory routine
-    print(40 * '-' + '\nTesting inventory report:\n' + 40 * '-' + '\n')
-    print('Test1: ', report_inventory('2021-01-01'))    # Right input
-    print('Test2: ', report_inventory('2021-01-16'))    # Right input
-    print('Test3: ', report_inventory('test'))          # Wrong input
-    print('Test4: ', report_inventory(None))            # Wrong input
-
-    print('\nTest revenu:') 
+    # Check reports
+    print(report_inventory('2021-01-01'))
     print(report_revenue('2021-01-01'))
-    print(report_revenue('2021-01-04'))
-    print(report_revenue('2021-01'))
-  
-    print('\nTest profit:') 
     print(report_profit('2021-01-01'))
-    print(report_profit('2021-01-04'))
-    print(report_profit('2021-01-08'))
     print(report_profit('2021-01'))
-
+    print(report_products('2021-01-01'))
+    print(report_bought('2021-01-01'))
+    print(report_sold('2021-01-01'))
     return
-
-
 
 if __name__ == '__main__':
     main()
