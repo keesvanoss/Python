@@ -1,17 +1,16 @@
 import csv, pathlib, os
-from utils import check_date, cleardata
+from utils import check_date
+from files import clearfile
 
 csv_outputfile = 'bought.csv'
 
 #---------------------------------------------------------------------------------------------
 # Syntax: buy product_name, price, expiration_date
-# Data will be added to the bought.csv file with an iId
+# Data will be added to the bought.csv file with an ID
 #---------------------------------------------------------------------------------------------
 
 def buy(product_name, buy_date, price, expiration_date):
 
-    print(product_name, buy_date, price, expiration_date)
-    
     # Check if routine is called with the right parameters    
     error_message = ''
     if product_name == None:
@@ -26,7 +25,7 @@ def buy(product_name, buy_date, price, expiration_date):
     # If parameters ok, add data to bought.csv file
     if error_message == '':
         
-        # If bought.csv exists, read last id nr else id = 0
+        # If bought.csv exists, read last ID else id = 0
         file = pathlib.Path(csv_outputfile)
         if file.exists ():
             with open(csv_outputfile,'r') as f:
@@ -36,7 +35,7 @@ def buy(product_name, buy_date, price, expiration_date):
         else:
             id = 0
 
-        # Write data row with id to csv file
+        # Write data row with ID to csv file
         with open(csv_outputfile, mode='a', newline='', encoding='utf-8') as f:
             product_writer = csv.writer(f, delimiter=',', quotechar="'", quoting=csv.QUOTE_NONNUMERIC)
             product_writer.writerow([id, product_name, buy_date, price, expiration_date])
@@ -57,7 +56,7 @@ def buy(product_name, buy_date, price, expiration_date):
 def main():
     
     # If bought.csv and sold.csv exists, delete them
-    cleardata('bought.csv')
+    clearfile('bought.csv')
 
     # Test call with missing parameters
     print('Testing input1:')

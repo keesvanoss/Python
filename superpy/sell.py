@@ -1,6 +1,6 @@
 import csv, pathlib, os
-from utils import check_date, cleardata
-from files import read_bought, read_sold
+from utils import check_date
+from files import read_bought, read_sold, clearfile
 from datetime import datetime
 
 csv_outputfile = 'sold.csv'
@@ -86,7 +86,7 @@ def sell(product_name, sell_date, price):
 
 def main():
     
-    cleardata('sold.csv')
+    clearfile('sold.csv')
     
     #Test call with missing parameters
     print('Testing input1:')

@@ -9,7 +9,7 @@ from datetime import date, timedelta, datetime
 # The inventory is listed on a given date.
 #---------------------------------------------------------------------------------------------
 
-def report_inventory(report_date):
+def report_inventory(report_date, exportcsv):
 
     # Convert report date to date object
     try:
@@ -17,12 +17,6 @@ def report_inventory(report_date):
     except:
         return 'ERROR, Wrong date format'
 
-    # Create report header
-    report_out = f'\n********** INVENTORY REPORT ON {report_date} **********'
-    report_out += '\n+=============================+==========+=========+'
-    report_out += '\n| Product Name                | In stock | Expired |'
-    report_out += '\n+-----------------------------+----------+---------+'
-    
     # Read products bought and create list with all products
     bought = read_bought(report_date)
     productlist = set()
@@ -64,25 +58,43 @@ def report_inventory(report_date):
                 else:
                     products_expired[bought[key][0]] = 1
 
-    # Create report for all products bought
-    for item in productlist:
-        report_out += "\n| " + item.ljust(28) + "|" 
-        if item in products_stock:
-            report_out += str(products_stock[item]).center(10) + "|"
-        else:
-            report_out += str(0).center(10) + "|"
-        if item in products_expired:
-            report_out += str(products_expired[item]).center(9) + "|"
-        else:
-            report_out += str(0).center(9) + "|"
+    # Export inventory to REPORT.CSV
+    if exportcsv == True:
+        try:
+            with open('report.csv', 'w') as export:
+                export_writer = csv.writer(export, lineterminator = '\n')
 
-    report_out += '\n+=============================+==========+=========+'
+                for item in productlist:
+                    stock_out = products_stock[item] if item in products_stock else 0 
+                    expired_out = products_expired[item] if item in products_expired else 0 
+                    export_writer.writerow([item, stock_out, expired_out])
+            return 'Data exported REPORT.CSV'
+        except:
+            return 'ERROR, in creating datafile REPORT.CSV'
+    else:
 
-    return report_out
-
+        # Create inventory report
+        report_out = f'\n********** INVENTORY REPORT ON {report_date} **********'
+        report_out += '\n+=============================+==========+=========+'
+        report_out += '\n| Product Name                | In stock | Expired |'
+        report_out += '\n+-----------------------------+----------+---------+'
+    
+        for item in productlist:
+            report_out += "\n| " + item.ljust(28) + "|" 
+            if item in products_stock:
+                report_out += str(products_stock[item]).center(10) + "|"
+            else:
+                report_out += str(0).center(10) + "|"
+            if item in products_expired:
+                report_out += str(products_expired[item]).center(9) + "|"
+            else:
+                report_out += str(0).center(9) + "|"
+        report_out += '\n+=============================+==========+=========+'
+        return report_out
 
 #---------------------------------------------------------------------------------------------
-#---------------------------------------------------------------------------------------------
+# Report all products bought before report-date
+# --------------------------------------------------------------------------------------------
 
 def report_products(report_date):
 
@@ -131,6 +143,7 @@ def report_revenue(report_date):
     return '\nRevenu on ' + report_date + ': EUR {:.2f}'.format(revenue)
 
 #---------------------------------------------------------------------------------------------
+# Report profit on report-date
 #---------------------------------------------------------------------------------------------
 
 def report_profit(report_date):
@@ -152,7 +165,11 @@ def report_profit(report_date):
  
     return '\nProfit on ' + report_date + ': EUR {:.2f}'.format(total_sold - total_bought)
 
-def report_bought(report_date):
+#---------------------------------------------------------------------------------------------
+# Report products + info bought before report-date
+#---------------------------------------------------------------------------------------------
+
+def report_bought(report_date, exportcsv):
 
     # Convert report date to date object
     try:
@@ -163,24 +180,41 @@ def report_bought(report_date):
     # Read bought products 
     bought = read_bought(report_date)
 
-    # Create report header
-    report_out = f'\n************ BOUGHT REPORT ON {report_date} ***********'
-    report_out += '\n+==============+============+=========+============+'
-    report_out += '\n| Product Name |  Buy date  |  Price  |  Exp.date  |'
-    report_out += '\n+--------------+------------+---------+------------+'
+    if exportcsv == True:
+        try:
+            with open('report.csv', 'w') as export:
+                export_writer = csv.writer(export, lineterminator = '\n')
 
-    # Create report for all products bought
-    for key in bought:
-        report_out += "\n| " + bought[key][0].ljust(13) + "|" 
-        report_out += bought[key][1].replace("'", "").center(12) + "|" 
-        report_out += "{:.2f}".format(bought[key][2]).center(9) + "|" 
-        report_out += bought[key][3].replace("'", "").center(12) + "|" 
-        
-    report_out += '\n+==============+============+=========+============+'
+                for key in bought:
+                    name_out = bought[key][0]
+                    buydate_out = bought[key][1] 
+                    price_out = bought[key][2]
+                    expdate_out = bought[key][3]
+                    export_writer.writerow([name_out, buydate_out, price_out,expdate_out])
+            return 'Data exported REPORT.CSV'
+        except:
+            return 'ERROR, in creating datafile REPORT.CSV'
+    else:     
+        # Create report header
+        report_out = f'\n************ BOUGHT REPORT ON {report_date} ***********'
+        report_out += '\n+==============+============+=========+============+'
+        report_out += '\n| Product Name |  Buy date  |  Price  |  Exp.date  |'
+        report_out += '\n+--------------+------------+---------+------------+'
 
-    return report_out
+        # Create report for all products bought
+        for key in bought:
+            report_out += "\n| " + bought[key][0].ljust(13) + "|" 
+            report_out += bought[key][1].replace("'", "").center(12) + "|" 
+            report_out += "{:.2f}".format(bought[key][2]).center(9) + "|" 
+            report_out += bought[key][3].replace("'", "").center(12) + "|" 
+        report_out += '\n+==============+============+=========+============+'
+        return report_out
  
-def report_sold(report_date):
+#---------------------------------------------------------------------------------------------
+# Report products + info sold or expired on report-date
+#---------------------------------------------------------------------------------------------
+
+def report_sold(report_date, export_csv):
 
     # Convert report date to date object
     try:
@@ -193,21 +227,36 @@ def report_sold(report_date):
     sold = read_sold(report_date)
 
     # Create report header
-    report_out = f'\n*********** SOLD REPORT ON {report_date} ***********'
+    report_out = f'\n******* SOLD + EXPIRED REPORT ON {report_date} ********'
     report_out += '\n+==============+============+=========+============+'
     report_out += '\n| Product Name |  Sold date |  Price  |  Exp.date  |'
     report_out += '\n+--------------+------------+---------+------------+'
 
-    # Create report for all products bought
+    # Create report for all products sold and put ID in list
+    soldlist = []
     for key in sold:
+        soldlist.append(sold[key[0]][0])
         item = bought[sold[key[0]][0]]
         report_out += "\n| " + item[0].ljust(13) + "|" 
         report_out += sold[key][2].replace("'", "").center(12) + "|" 
         report_out += "{:.2f}".format(sold[key][3]).center(9) + "|" 
         report_out += item[3].replace("'", "").center(12) + "|" 
-        
     report_out += '\n+==============+============+=========+============+'
-
+    
+    # Create report for all products expired
+    sold_out = ''
+    for key in bought:
+        if not key in soldlist:
+            exp_date = datetime.strptime(bought[key][3].strip("'"),'%Y-%m-%d')
+            if rep_date > exp_date:
+                sold_out += "\n| " + bought[key][0].ljust(13) + "|" 
+                sold_out += 'Expired'.center(12) + "|" 
+                sold_out += '-'.center(9) + "|" 
+                sold_out += bought[key][3].replace("'", "").center(12) + "|" 
+    if sold_out != '':
+        report_out += sold_out
+        report_out += '\n+==============+============+=========+============+'
+    
     return report_out
 
 
@@ -219,17 +268,19 @@ def report_sold(report_date):
 # - revenue, shows revenue on certain date
 # - profit, shows profit on certain date
 # - products, shows which products are available on certain date
+# - bought, shows all products + info bought before a certain date
+# - sold, shows all products + info sold or expired on a certain date
 #---------------------------------------------------------------------------------------------
 
-def show_report(report_name, report_date):
+def show_report(report_name, report_date, export_csv):
     
     # Check for valid report name typed
-    if report_name == 'inventory': return(report_inventory(report_date))
-    elif report_name == 'revenue': return(report_revenue(report_date))
-    elif report_name == 'profit': return(report_profit(report_date))
-    elif report_name == 'products':return(report_products(report_date))
-    elif report_name == 'bought':return(report_bought(report_date))
-    elif report_name == 'sold':return(report_sold(report_date))
+    if report_name == 'inventory': return(report_inventory(report_date, export_csv))
+    elif report_name == 'revenue': return(report_revenue(report_date, export_csv))
+    elif report_name == 'profit': return(report_profit(report_date, export_csv))
+    elif report_name == 'products':return(report_products(report_date, export_csv))
+    elif report_name == 'bought':return(report_bought(report_date, export_csv))
+    elif report_name == 'sold':return(report_sold(report_date, export_csv))
     else:
         print(f"ERROR: unknown report '{report_name}' <inventory, revenue, profit>")
     return
@@ -239,11 +290,13 @@ def main():
     # Check reports
     print(report_inventory('2021-01-01'))
     print(report_revenue('2021-01-01'))
+    print(report_profit('2023-09'))
     print(report_profit('2021-01-01'))
-    print(report_profit('2021-01'))
+    print(report_profit('2023-09'))
     print(report_products('2021-01-01'))
     print(report_bought('2021-01-01'))
-    print(report_sold('2021-01-01'))
+    print(report_sold('2021-01-10'))
+    print(report_sold('2021-01-11'))
     return
 
 if __name__ == '__main__':

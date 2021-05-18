@@ -1,0 +1,66 @@
+Buying items:
+
+When an item is bought, the data will be saved in the bought.csv file.
+
+Syntax: superpy.py buy  <product_name> <price> <buy_date> <expiration_date>
+
+Parameters:
+<produkt_name>   , --product_name string
+<price>          , --price float
+<buy_date>       , --buy_date date
+<expiration_date>, --expiration_date date
+
+Valid date arguments:
+--now
+--today
+--yesterday
+--date 'yyyy-mm-dd'
+
+is a description of the product as a string
+<price>       , is the price for which an item was purchased as a floating point number 
+<buy_date>    , is the date when the item was bought
+<expiration_date>, is the date when the product is expired
+
+Dates can have following f
+
+usage:  superpy.py <CLI_command> [Options]
+
+    Examples:                     Files>  
+
+        superpy.py buy  <product_name> <price> <buy_date> <expiration_date>
+        superpy.py sell <product_name> <price> <sell_date>
+        superpy.py report  <inventory> [report-date]
+                           <revenue>   [report-date]
+                           <profit>    [report-date]
+                           <products>  [report_date]
+                           <bought>    [report_date]
+                           <sold>      [report_date]
+        superpy.py --set-date
+                   --advance-date [days]
+
+    Valid date arguments:
+        --now
+        --today
+        --yesterday
+        --date 'YY-mm-dd'
+
+
+SuperPy, a supermarkt inventory tracker tool
+
+positional arguments:
+  CLI_command                        command <buy/sell/report>
+  report_name                        report name <inventory/revenue/profit>
+
+optional arguments:
+  -h, --help                         show this help message and exit
+  --product_name PRODUCT_NAME        product name
+  --price PRICE                      product price
+  --expiration_date EXPIRATION_DATE  product expiration date
+  --buy_date BUY_DATE                product buy date
+  --sell_date SELL_DATE              product sell date
+  --date DATE                        select certain date
+  --now                              select date from config.sys as current date
+  --today                            select date from config.sys as current date
+  --yesterday                        select date from config.sys -1 as current date
+  --set_date SET_DATE                set current date in config.txt
+  --advance_date ADVANCE_DATE        advance current date in config.sys with xx days

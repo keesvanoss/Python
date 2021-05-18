@@ -1,9 +1,10 @@
-import csv, pathlib
+import csv, pathlib, os
 from datetime import datetime
 
 # Read products bought
 def read_bought(compare_date):
 
+    #print (compare_date)
     # Convert compare date to date object
     try:
         compare_date = datetime.strptime(compare_date.strip("'"),'%Y-%m-%d')
@@ -53,13 +54,27 @@ def read_sold(compare_date):
         return f"ERROR: can't open {filename}"
     return sold
 
+#---------------------------------------------------------------------------------------------
+# Clear datafile
+#---------------------------------------------------------------------------------------------
+
+def clearfile(filename):
+    file = pathlib.Path(filename)
+    try:
+        if file.exists ():
+            os.remove(file)
+        return f"File {filename} is erased"
+    except:
+        return f"ERROR, can't erase file {filename}"
 
 def main():
     
-    print('Test reading bought.csv into list:')
-    print(read_bought('2021-01-03'))
-    print('\nTest reading sold.csv into list:')
-    print(read_sold('2021-01-04'))
+    # print('Test reading bought.csv into list:')
+    # print(read_bought('2021-01-03'))
+    # print('\nTest reading sold.csv into list:')
+    # print(read_sold('2021-01-04'))
+    print(clearfile('bought.csv'))
+    print(clearfile('sold.csv'))
 
 
 if __name__ == '__main__':

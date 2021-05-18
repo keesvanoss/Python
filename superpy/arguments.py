@@ -7,6 +7,9 @@ msg = """ superpy.py <CLI_command> [Options]\n
     \tsuperpy.py report  <inventory> [report-date]
     \t\t\t   <revenue>   [report-date] 
     \t\t\t   <profit>    [report-date]
+    \t\t\t   <products>  [report_date]
+    \t\t\t   <bought>    [report_date]
+    \t\t\t   <sold>      [report_date]
     \tsuperpy.py --set-date
     \t\t   --advance-date [days]\n\n
     Valid date arguments:
@@ -89,5 +92,11 @@ def get_arguments():
                     help='advance current date in config.sys with xx days', 
                     action='store', 
                     type=int)
+    
+    my_parser.add_argument('--export_csv', 
+                    help='export data to data file', 
+                    action='store_const', 
+                    const=True)
+
 
     return my_parser.parse_args()

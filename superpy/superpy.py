@@ -8,11 +8,11 @@ __human_name__ = 'superpy'
 
 import report
 from datetime import date, timedelta, datetime
-#, sys, pathlib
 from arguments import get_arguments
-from csv_buy import buy
-from csv_sell import sell
-from utils import get_current_date, advance_date, set_date
+from buy import buy
+from sell import sell
+from utils import get_current_date
+from utils import advance_date, set_date
 
 # Your code below this line.
 
@@ -31,10 +31,10 @@ def main():
     
     # Check date handling commands and execute the corresponding routine
     if args.advance_date != None:
-        current_date = advance_date(args.advance_date)
+        current_date = print(advance_date(args.advance_date))
         return current_date
     if args.set_date != None:
-        current_date = set_date(args.set_date)
+        current_date = print(set_date(args.set_date))
         return current_date
     
     # Check commands and execute the corresponding routine
@@ -53,7 +53,7 @@ def main():
         if args.date != None:
             report_date = args.date
         if report_date != None:
-            print(report.show_report(args.report_name, report_date))
+            print(report.show_report(args.report_name, report_date, args.export_csv))
         else:
             print(f"ERROR: missing <date>")
 

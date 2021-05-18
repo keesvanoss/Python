@@ -2,13 +2,6 @@ import pathlib, os
 import csv
 from datetime import date, timedelta, datetime
 
-
-#const=date.today().strftime("%Y-%m-%d"))
-#const=date.today().strftime("%Y-%m-%d"))
-#const=(date.today() - timedelta(days=1)).strftime("%Y-%m-%d"))
-
-
-
 #---------------------------------------------------------------------------------------------
 # Check date to be sure it's a valid date in the right format.
 # If ok, return date, else return None
@@ -23,8 +16,10 @@ def check_date(input_date):
     except:
         return None
 
+#---------------------------------------------------------------------------------------------
 # Read current date from config.txt and convert to string 'YYYY-mm-dd'
 # Date is stored in config.txt as Year, Month, Dat
+#---------------------------------------------------------------------------------------------
 
 def get_current_date():
     file = pathlib.Path('config.txt')
@@ -37,6 +32,10 @@ def get_current_date():
             return curdate.strftime('%Y-%m-%d')  
     else:
         return 'ERROR: config.txt does not exist.'
+
+#---------------------------------------------------------------------------------------------
+# Advance date xx days and save year,month,day in config.txt
+#---------------------------------------------------------------------------------------------
 
 def advance_date(days):
     
@@ -51,7 +50,11 @@ def advance_date(days):
     with open('config.txt', 'w') as f:
         f.write(year + ',' + month + ',' + day)
     
-    return date
+    return f'Current date: {date}'
+
+#---------------------------------------------------------------------------------------------
+# Set current date to a certain date and save year,month,day in config.txt
+#---------------------------------------------------------------------------------------------
 
 def set_date(date):
     
@@ -62,31 +65,21 @@ def set_date(date):
     with open('config.txt', 'w') as f:
         f.write(year + ',' + month + ',' + day)
     
-    return date
+    return f'Current date: {date}'
 
-# Clear data files for testing
-
-def cleardata(filename):
-    file = pathlib.Path(filename)
-    if file.exists ():
-       os.remove(file)
-    
-    # file = pathlib.Path('sold.csv')
-    # if file.exists ():
-    #    os.remove(file)
-
-    return
+#---------------------------------------------------------------------------------------------
 # Test routine
+#---------------------------------------------------------------------------------------------
 
 def main():
     
-    # Check datum
-        # print('Test1: ', check_date(None) == None)
-        # print('Test2: ', check_date('test') == None)
-        # print('Test3: ', check_date('2021-03-90') == None)
-        # print('Test4: ', check_date('2021-03-10') == '2021-03-10')
-        # print('Test5: ', get_current_date() == datetime.datetime(2021, 3, 29))
-    advance_date(2)   
+    #Check date utils
+    print(set_date('2021-01-01'))
+    print(advance_date(2))
+    # print('Test3: ', check_date('2021-03-90') == None)
+    # print('Test4: ', check_date('2021-03-10') == '2021-03-10')
+    # print('Test5: ', get_current_date() == datetime.datetime(2021, 3, 29))
+    # advance_date(2)   
     return
 
 
