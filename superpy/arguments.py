@@ -98,5 +98,10 @@ def get_arguments():
                     action='store_const', 
                     const=True)
 
+    my_parser.add_argument('--show_graph', 
+                    help='show bar graph of data', 
+                    action='store_const', 
+                    const=True)
+
 
     return my_parser.parse_args()

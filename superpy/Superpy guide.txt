@@ -1,66 +1,115 @@
-Buying items:
+=======================================================================================================================
+SUPERPY USER GUIDE v1.0:
+=======================================================================================================================
 
-When an item is bought, the data will be saved in the bought.csv file.
+Superpy is a Python application to keep track of buying and selling products for a supermarket.
+The buying- and selling data is stored in files.
+You can also display reports with product info generated from the buying- and selling data. 
+The application is programmed as a Command Line Interpreter.
 
-Syntax: superpy.py buy  <product_name> <price> <buy_date> <expiration_date>
+-----------------------------------------------------------------------------------------------------------------------
+Buying a product:
+-----------------------------------------------------------------------------------------------------------------------
+
+When a product is bought, the data will be saved in a file called BOUGHT.CSV 
+The data can be saved by using the following syntax:
+
+Syntax:
+	superpy.py buy --product_name <string> --buy_date <yyyy-mm-dd> --price <float> --expiration_date <yyyy-mm-dd>
 
 Parameters:
-<produkt_name>   , --product_name string
-<price>          , --price float
-<buy_date>       , --buy_date date
-<expiration_date>, --expiration_date date
+	--product_name <string>        , <string>     is a description of the product
+	--buy_date <yyyy-mm-dd>        , <yyyy-mm-dd> is the buying date when the product was bought
+	--price <float>                , <float>      is the buying price of the product
+	--expiration_date <yyyy-mm-dd> , <yyyy-mm-dd> is the expiration date for the product
 
-Valid date arguments:
---now
---today
---yesterday
---date 'yyyy-mm-dd'
+-----------------------------------------------------------------------------------------------------------------------
+Selling a product:
+-----------------------------------------------------------------------------------------------------------------------
 
-is a description of the product as a string
-<price>       , is the price for which an item was purchased as a floating point number 
-<buy_date>    , is the date when the item was bought
-<expiration_date>, is the date when the product is expired
+When a product is sold, the data will be saved in a file called SOLD.CSV
+The first product in the BOUGHT.CSV file which is not sold and not expired, will be marked as sold and saved in SOLD.CSV 
+The data can be saved by using the following syntax:
 
-Dates can have following f
+Syntax:
+	superpy.py sell --product_name <string> --sell_date <yyyy-mm-dd> --price <float>
 
-usage:  superpy.py <CLI_command> [Options]
+Parameters:
+	--product_name <string>        , <string>     is a description of the product
+	--sell_date <yyyy-mm-dd>       , <yyyy-mm-dd> is the buying date when the product was bought
+	--price <float>                , <float>      is the buying price of the product
 
-    Examples:                     Files>  
+-----------------------------------------------------------------------------------------------------------------------
+Reporting :
+-----------------------------------------------------------------------------------------------------------------------
 
-        superpy.py buy  <product_name> <price> <buy_date> <expiration_date>
-        superpy.py sell <product_name> <price> <sell_date>
-        superpy.py report  <inventory> [report-date]
-                           <revenue>   [report-date]
-                           <profit>    [report-date]
-                           <products>  [report_date]
-                           <bought>    [report_date]
-                           <sold>      [report_date]
-        superpy.py --set-date
-                   --advance-date [days]
+You can print several reports for displaying information about the products or exporting the data to REPORT.CSV:
+Select one of these reports:
 
-    Valid date arguments:
-        --now
-        --today
-        --yesterday
-        --date 'YY-mm-dd'
+	inventory , lists the inventory of the products on a given date
+	revenue   , prints the revenue on a given date
+	profit    , prints the profit on a given date
+	products  , lists the product range available on a given date
+	bought    , lists all products bought before a given date
+	sold      , lists all products sold or expired at a given date
 
+The syntaxes for the different reports are the following:
 
-SuperPy, a supermarkt inventory tracker tool
+Syntax:
+	superpy.py report inventory --date <date> --export_csv
+	superpy.py report revenue   --date <date> --export_csv
+	superpy.py report profit    --date <date> --export_csv
+	superpy.py report products  --date <date> --export_csv
+	superpy.py report bought    --date <date> --export_csv
+	superpy.py report sold      --date <date> --export_csv
 
-positional arguments:
-  CLI_command                        command <buy/sell/report>
-  report_name                        report name <inventory/revenue/profit>
+Parameters:
+	--export_csv		, optional for output to REPORT.CSV file instead of output to screen
 
-optional arguments:
-  -h, --help                         show this help message and exit
-  --product_name PRODUCT_NAME        product name
-  --price PRICE                      product price
-  --expiration_date EXPIRATION_DATE  product expiration date
-  --buy_date BUY_DATE                product buy date
-  --sell_date SELL_DATE              product sell date
-  --date DATE                        select certain date
-  --now                              select date from config.sys as current date
-  --today                            select date from config.sys as current date
-  --yesterday                        select date from config.sys -1 as current date
-  --set_date SET_DATE                set current date in config.txt
-  --advance_date ADVANCE_DATE        advance current date in config.sys with xx days
+	You may use several options instead of --date <date>:
+
+	--now			, report until current date (stored in config.txt)
+	--today			, report until current date (stored in config.txt)
+	--yesterday		, report until yesterdays date
+	--date <yyyy-mm-dd>	, report until given date yyyy-mm-dd
+	--month mm		, report monthly overview
+
+-----------------------------------------------------------------------------------------------------------------------
+Current date handling:
+-----------------------------------------------------------------------------------------------------------------------
+
+The current date is stored in the textfile CONFIG.TXT
+You can manipulated the current date with the following syntax:
+
+Syntax:
+	superpy.py --set_date <yyyy-mm-dd>	, sets a new current date and updates CONFIG.TXT
+	superpy.py --advance_time <days>	, advances the current date with <days> days and updates CONFIG.TXT
+
+-----------------------------------------------------------------------------------------------------------------------
+Datafile format:
+-----------------------------------------------------------------------------------------------------------------------
+
+The data is stored in 3 files:
+
+	- bought.csv
+	- sold.csv
+	- config.txt
+
+The format for the files is like this:
+
+BOUGHT.CSV:
+	ID		<integer>
+	Product name	<string>
+	Buying date	<string> format: yyyy-mm-dd
+	Buying price	<floating>
+	Expiration date	<string> format: yyyy-mm-dd
+
+SOLD.CSV:
+	ID		<integer>
+	bought-ID	<integer>
+	Selling date	<string> format: yyyy-mm-dd
+	Selling price	<floating>
+
+CONFIG.TXT:
+	yyyy,mm,dd	year, month, day
+
