@@ -12,7 +12,7 @@ Example:
 	if buy_date <= exp_date:
 
 * ## Highlight 2): Parameter check
-When enetering routines, parameters are required. If you are missing parameters or having parameters in the wrong format, the program ends with an error. When entering a routine, I check f the right parameters are given and if dates are in the right format. If not, a decent message is displayed.
+When entering routines, parameters are required. If you are missing parameters or having parameters in the wrong format, the program ends with an error. When entering a routine, I check f the right parameters are given and if dates are in the right format. If not, a decent message is displayed.
 
 Example:
 
@@ -25,7 +25,30 @@ Example:
     if price is None:
         error_message += "ERROR: missing argument --price\n"
 
-* ## Highlight 3)
+* ## Highlight 3): Report output
+When a report is required, the right data is fitered and adjusted and put in a list. This list is the base for creating reports because the same list is used to generate a bar-graphic, csv-file or a text report. This way you only have to generate the datalist once which means that if the output has to be changed, you only have to change it in one place.
+
+Example:
+
+    # Create list with reporting data
+    outputlist = []
+    for item in productlist:
+        stock_out = products_stock[item] if item in products_stock else 0
+        expired_out = products_expired[item] if item in products_expired else 0
+        if (stock_out != 0) or (expired_out != 0):
+            outputlist.append([item, stock_out, expired_out])
+
+        # Export inventory to REPORT.CSV
+        if exportcsv:
+            ...........
+
+        # Show bar graph for inventory
+        if showgraph:
+            ...........
+	    
+        # Create inventory text report
+        else:
+
 
 
 
