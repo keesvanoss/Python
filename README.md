@@ -5,11 +5,9 @@ To make calculations with dates is difficult in Python. You do need the Datetime
 
 Example:
 
-	# Convert dates to date objects for comparing
-	
-	exp_date = datetime.strptime(bought[key][3].strip("'"), '%Y-%m-%d')
-	
-	buy_date = datetime.strptime(bought[key][1].strip("'"), '%Y-%m-%d')
+        # Convert dates to date objects for comparing
+        exp_date = datetime.strptime(bought[key][3].strip("'"), '%Y-%m-%d')
+        buy_date = datetime.strptime(bought[key][1].strip("'"), '%Y-%m-%d')
 
 	if buy_date <= exp_date:
 
