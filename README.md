@@ -43,7 +43,7 @@ Example:
             ...........
 
         # Show bar graph for inventory
-        if showgraph:
+        elif showgraph:
             ...........
 	    
         # Create inventory text report
