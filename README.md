@@ -12,7 +12,7 @@ Example:
 	if buy_date <= exp_date:
 
 * ## Highlight 2): Parameter check
-When entering routines, parameters are required. If you are missing parameters or having parameters in the wrong format, the program ends with an error. When entering a routine, I check f the right parameters are given and if dates are in the right format. If not, a decent message is displayed.
+When entering routines, parameters are required. If you are missing parameters or having parameters in the wrong format, the program ends with an error. When entering a routine, I check if the right parameters are given and if dates are in the right format. If not, a decent message is displayed.
 
 Example:
 
