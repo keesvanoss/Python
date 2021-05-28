@@ -8,6 +8,19 @@ You can also display reports with product info generated from the buying- and se
 The application is programmed as a Command Line Interpreter.
 
 -----------------------------------------------------------------------------------------------------------------------
+Installing libraries:
+-----------------------------------------------------------------------------------------------------------------------
+To run the program you need to install some extra libraries:
+
+- csv
+- argparse
+- datetime
+- matplotlib	(additional library for submission)
+- autopep8		(additional library for submission)
+
+I used autopep8 to check the code format.
+
+-----------------------------------------------------------------------------------------------------------------------
 Buying a product:
 -----------------------------------------------------------------------------------------------------------------------
 
@@ -23,6 +36,10 @@ Parameters:
 	--price <float>                , <float>      is the buying price of the product
 	--expiration_date <yyyy-mm-dd> , <yyyy-mm-dd> is the expiration date for the product
 
+Example:
+	>python3 superpy.py buy --product-name cherry --price 0.8 --expiration-date 2020-01-01
+	>Ok
+
 -----------------------------------------------------------------------------------------------------------------------
 Selling a product:
 -----------------------------------------------------------------------------------------------------------------------
@@ -36,8 +53,12 @@ Syntax:
 
 Parameters:
 	--product_name <string>        , <string>     is a description of the product
-	--sell_date <yyyy-mm-dd>       , <yyyy-mm-dd> is the buying date when the product was bought
-	--price <float>                , <float>      is the buying price of the product
+	--sell_date <yyyy-mm-dd>       , <yyyy-mm-dd> is the selling date when the product was sold
+	--price <float>                , <float>      is the selling price of the product
+
+Example:
+	>python3 superpy.py buy --product-name cherry --price 1.2 --expiration-date 2020-01-01
+	>Ok
 
 -----------------------------------------------------------------------------------------------------------------------
 Reporting :
@@ -56,7 +77,7 @@ Select one of these reports:
 The syntaxes for the different reports are the following:
 
 Syntax:
-	superpy.py report inventory --date <date> --export_csv
+	superpy.py report inventory --date <date> --export_csv --show_graph
 	superpy.py report revenue   --date <date> --export_csv
 	superpy.py report profit    --date <date> --export_csv
 	superpy.py report products  --date <date> --export_csv
@@ -65,14 +86,63 @@ Syntax:
 
 Parameters:
 	--export_csv		, optional for output to REPORT.CSV file instead of output to screen
+	--show_graph		, optional for displaying a bar-graph of the output
+	
+	You may replace --date <date> with several options:
 
-	You may use several options instead of --date <date>:
-
-	--now			, report until current date (stored in config.txt)
-	--today			, report until current date (stored in config.txt)
-	--yesterday		, report until yesterdays date
+	--now				, report until current date (stored in config.txt)
+	--today				, report until current date (stored in config.txt)
+	--yesterday			, report until yesterdays date
 	--date <yyyy-mm-dd>	, report until given date yyyy-mm-dd
-	--month mm		, report monthly overview
+	--date <yyyy-mm>	, report monthly overview
+
+Examples:
+	>python3 superpy.py report inventory --date 2021-01-10
+	>
+	>********** INVENTORY REPORT ON 2021-01-10 **********
+	>+=============================+==========+=========+
+	>| Product Name                | In stock | Expired |
+	>+-----------------------------+----------+---------+
+	>| Peer                        |    2     |    0    |
+	>| Apple                       |    0     |    1    |
+	>| Banana                      |    1     |    0    |
+	>+=============================+==========+=========+
+	
+	>python3 superpy.py report revenue --date 2021-02
+	>Revenu on February 2021: EUR 7.00
+
+	>python3 superpy.py report profit --now
+	>Profit on 2021-01-01: EUR -9.00
+
+	>python3 superpy.py report products --date 2021-02-01
+	>Products bought until 2021-02-01: Orange, Banana, Peer, Apple, Cherry
+
+	>python3 superpy.py report bought --date 2021-02-02
+	>
+	>************ BOUGHT REPORT ON 2021-02-02 ***********
+	>+==============+============+=========+============+
+	>| Product Name |  Buy date  |  Price  |  Exp.date  |
+	>+--------------+------------+---------+------------+
+	>| Banana       | 2021-01-08 |   3.00  | 2021-01-15 |
+	>| Orange       | 2021-01-01 |   3.00  | 2021-01-10 |
+	>| Apple        | 2021-01-01 |   2.00  | 2021-01-10 |
+	>| Peer         | 2021-01-01 |   4.00  | 2021-01-12 |
+	>| Peer         | 2021-01-03 |   4.00  | 2021-02-15 |
+	>| Cherry       | 2021-01-06 |   3.40  | 2021-02-01 |
+	>+==============+============+=========+============+
+
+	>python3 superpy.py report sold --date 2021-01
+	>
+	>******* SOLD + EXPIRED REPORT ON January 2021 ********
+	>+==============+============+=========+============+
+	>| Product Name |  Sold date |  Price  |  Exp.date  |
+	>+--------------+------------+---------+------------+
+	>| Orange       | 2021-01-02 |   2.00  | 2021-01-10 |
+	>| cherry       | 2021-01-06 |   5.40  | 2021-02-01 |
+	>| Banana       |  Expired   |    -    | 2021-01-15 |
+	>| Apple        |  Expired   |    -    | 2021-01-10 |
+	>| Peer         |  Expired   |    -    | 2021-01-12 |
+	>+==============+============+=========+============+
 
 -----------------------------------------------------------------------------------------------------------------------
 Current date handling:
@@ -83,7 +153,14 @@ You can manipulated the current date with the following syntax:
 
 Syntax:
 	superpy.py --set_date <yyyy-mm-dd>	, sets a new current date and updates CONFIG.TXT
-	superpy.py --advance_time <days>	, advances the current date with <days> days and updates CONFIG.TXT
+	superpy.py --advance_date <days>	, advances the current date with <days> days and updates CONFIG.TXT
+
+Examples:
+	>python3 superpy.py --set_date 2021-01-01
+	>Current date: 2021-01-01
+	>
+	>python3 superpy.py --advance_time 2
+	>Current date: 2021-01-03
 
 -----------------------------------------------------------------------------------------------------------------------
 Datafile format:
@@ -98,9 +175,9 @@ The data is stored in 3 files:
 The format for the files is like this:
 
 BOUGHT.CSV:
-	ID		<integer>
+	ID				<integer>
 	Product name	<string>
-	Buying date	<string> format: yyyy-mm-dd
+	Buying date		<string> format: yyyy-mm-dd
 	Buying price	<floating>
 	Expiration date	<string> format: yyyy-mm-dd
 
