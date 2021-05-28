@@ -4,6 +4,7 @@
 To make calculations with dates is difficult in Python. You do need the Datetime library to convert ASCII dates into date objects. This way you can make calculations with dates in an easy way. So first convert dates into dates objects before doing any calculations.
 
 Example:
+
 	# Convert dates to date objects for comparing
 	
 	exp_date = datetime.strptime(bought[key][3].strip("'"), '%Y-%m-%d')
