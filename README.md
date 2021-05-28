@@ -26,7 +26,7 @@ Example:
         error_message += "ERROR: missing argument --price\n"
 
 * ## Highlight 3): Report output
-When a report is required, the right data is fitered and adjusted and put in a list. This list is the base for creating reports because the same list is used to generate a bar-graphic, csv-file or a text report. This way you only have to generate the datalist once which means that if the output has to be changed, you only have to change it in one place.
+When a report is required, the right data is filtered, adjusted and put in a list. This list is the base for creating reports because the same list is used to generate a bar-graphic, csv-file or a text report. This way you only have to generate the datalist once which means that if the output has to be changed, you only have to change it in one place.
 
 Example:
 
