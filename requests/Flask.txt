@@ -1,0 +1,13 @@
+Install Virtual Environment:
+
+- py -m venv venv		, Virtual Environment
+- venv\Scripts\activate		, Activate Virtual Environment
+
+Install Flask for Windows:
+
+- pip install flask		, Install Flask
+
+Run Flask server in terminal:
+
+- $env:FLASK_APP = "main.py"	, Set main program
+- flash run			, Run Flask
